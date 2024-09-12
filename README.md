@@ -7,12 +7,15 @@ Updates the watermark after processing the new changes.
 # Requirements
 Apache Spark with PySpark and Delta Lake libraries.
 Databricks File System (DBFS) or any other supported Delta Lake storage location.
+
 # Script Overview
 Step 1: Initialize Spark Session
+
 spark = SparkSession.builder.appName("Inc Load").getOrCreate()
 
 Step 2: Load and Write Initial Data
 Initial data is defined and written to a Delta table. The data includes id, name, and last_modified timestamp columns.
+
 initial_data = [
     (1, "Alice", "2024-08-01 10:00:00"),
     (2, "Bob", "2024-08-02 11:30:00"),
@@ -24,11 +27,13 @@ df_initial.write.format("delta").mode("overwrite").save("dbfs:/user/hive/warehou
 
 Step 3: Set and Store the Watermark
 The maximum last_modified timestamp from the initial data is used as the watermark to track the last load time. This value is stored in a separate Delta table.
+
 watermark_df = df_initial.selectExpr("max(last_modified) as max_last_modified")
 watermark_df.write.format("delta").mode("overwrite").save("dbfs:/user/hive/warehouse/watermark_table")
 
 Step 4: Define and Filter Incremental Data
 New records or updated records are loaded as incremental data. The data is filtered using the last recorded last_modified value (watermark) to capture only new or modified records.
+
 incremental_data = [
     (2, "Bob Smith", "2024-08-06 11:30:00"),  # Updated record
     (5, "Eva", "2024-08-07 13:00:00"),        # Updated record
@@ -42,6 +47,7 @@ new_changes_df = df_incremental.filter(f"last_modified > '{last_load_timestamp}'
 
 Step 5: Merge Incremental Data into Delta Table
 The filtered incremental data is merged into the existing Delta table using Delta Lake’s merge operation. This ensures that updated records are overwritten, and new records are inserted.
+
 from delta.tables import DeltaTable
 deltaTable = DeltaTable.forPath(spark, "dbfs:/user/hive/warehouse/load")
 
@@ -52,6 +58,7 @@ deltaTable.alias("target").merge(
 
 Step 6: Update the Watermark
 After processing the new changes, the script updates the watermark with the latest last_modified value.
+
 new_last_modified = new_changes_df.selectExpr("max(last_modified) as max_last_modified").collect()[0][0]
 spark.createDataFrame([(new_last_modified,)], ["max_last_modified"]).write.format("delta").mode("overwrite").save("dbfs:/user/hive/warehouse/watermark_table")
 
