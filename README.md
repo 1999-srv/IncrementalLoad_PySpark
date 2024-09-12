@@ -1,4 +1,4 @@
-# incremental Data Load and Merge with Delta Lake
+# Incremental Data Load and Merge with Delta Lake
 This script demonstrates an incremental data loading process using Delta Lake and PySpark. It performs the following steps:
 
 1) Writes initial data to a Delta table.
@@ -73,5 +73,6 @@ Initial Data Load: The script writes the initial dataset into a Delta table and 
 Incremental Data Processing: Define the new or modified data and run the script to filter and merge incremental changes based on the last loaded timestamp.
 Watermark Update: The script automatically updates the watermark table with the latest last_modified timestamp after processing new data.
 # File Structure
-Initial Delta Table: dbfs:/user/hive/warehouse/load
-Watermark Table: dbfs:/user/hive/warehouse/watermark_table
+**Initial Delta Table**: dbfs:/user/hive/warehouse/load
+
+**Watermark Table**: dbfs:/user/hive/warehouse/watermark_table
