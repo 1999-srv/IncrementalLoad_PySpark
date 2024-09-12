@@ -1,12 +1,13 @@
 # incremental Data Load and Merge with Delta Lake
 This script demonstrates an incremental data loading process using Delta Lake and PySpark. It performs the following steps:
-1 Writes initial data to a Delta table.
 
-2 Stores the last modification timestamp as a watermark to track data changes.
+1) Writes initial data to a Delta table.
 
-3 Loads incremental changes, filters them based on the last load timestamp, and merges them into the Delta table.
+2) Stores the last modification timestamp as a watermark to track data changes.
 
-4 Updates the watermark after processing the new changes.
+3) Loads incremental changes, filters them based on the last load timestamp, and merges them into the Delta table.
+
+4) Updates the watermark after processing the new changes.
 
 # Requirements
 Apache Spark with PySpark and Delta Lake libraries.
